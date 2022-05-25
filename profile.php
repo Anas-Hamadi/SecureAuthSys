@@ -35,7 +35,7 @@
 				<input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" placeholder="confirm password" onkeydown="if(event.key === 'Enter'){event.preventDefault();update();}" />
 			</div>
 			<br>
-			<div class="btn" onclick="update();">Sign Up</div>
+			<div class="btn" onclick="update();">Update</div>
 			<br>
 			<br>
 			<br>
