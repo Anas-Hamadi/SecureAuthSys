@@ -1,6 +1,20 @@
 <?php 
 	require_once 'php/utils.php';
     session_start();
+	$user = [];	
+	$C = connect();
+	if($C) {
+		$res = sqlSelect($C, 'SELECT * FROM users WHERE id=?', 'i', $_SESSION['userID']);
+		if($res && $res->num_rows === 1) {
+			$user = $res->fetch_assoc();
+		}
+		else {
+			exit;
+		}
+	}
+	else {
+		exit;
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,12 +29,12 @@
 <body>
 	
 	<div class="formWrapper">
-		<form id="updateForm">
-			<h1>Update Profile <?php echo $_SESSION['name'] ?></h1>
+		<form id="updateForm" >
+			<h1>Update Profile <?php echo htmlspecialchars($user['name'], ENT_QUOTES); ?></h1>
 			<div id="errs" class="errcontainer"></div>
 			<div class="inputblock">
 				<label for="name">Name</label>
-				<input id="name" name="name" type="text" autocomplete="name" value="<?php echo $_SESSION['name']?>" onkeydown="if(event.key === 'Enter'){event.preventDefault();update();}" />
+				<input id="name" name="name" type="text" autocomplete="name" value="<?php echo htmlspecialchars($user['name'], ENT_QUOTES); ?>" onkeydown="if(event.key === 'Enter'){event.preventDefault();update();}" />
 			</div>
 			<div class="inputblock">
 				<label for="email">Email</label>

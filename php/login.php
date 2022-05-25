@@ -9,6 +9,7 @@
 		if($C) {
 			$hourAgo = time() - 60*60;
 			$res = sqlSelect($C, 'SELECT users.id,password,verified,COUNT(loginattempts.id) FROM users LEFT JOIN loginattempts ON users.id = user AND timestamp>? WHERE email=? GROUP BY users.id', 'is', $hourAgo, $email);
+			
 			if($res && $res->num_rows === 1) {
 				$user = $res->fetch_assoc();
 				// if($user['verified']) {
@@ -17,6 +18,7 @@
 							// Log user in
 							$_SESSION['loggedin'] = true;
 							$_SESSION['userID'] = $user['id'];
+							$_SESSION['email'] = $email;
 							sqlUpdate($C, 'DELETE FROM loginattempts WHERE user=?', 'i', $user['id']);
 							echo 0;
 						}

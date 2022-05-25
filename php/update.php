@@ -1,5 +1,5 @@
 <?php
-	require_once 'sendValidationEmail.php';
+	session_start();
 	$errors = [];
 
 
@@ -26,21 +26,15 @@
 			//Connect to database
 			$C = connect();
 			if($C) {
-                // $q = sqlSelect($C, 'SELECT * From users Where [name]=?','s',$_SESSION['name']);
-				//Check if user with same email already exists
-				$res = sqlSelect($C, 'SELECT id FROM users WHERE email=?', 's', $_POST['email']);
-				if($res && $res->num_rows === 0) {
-					//Actually create the account
+					// Updating 
 					$hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
-					$id = sqlInsert($C, 'UPDATE users SET (name=?,email=?, password=?, verified=0)', 'sss', $_POST['name'], $_POST['email'], $hash);
-					
+					$sql = "UPDATE users SET users.name = :n , email = :e, password =:p where id=:id";
+					$q = $C->prepare($sql);
+					$q->execute(['n'=>$_POST['name'], 'e'=>$_POST['email'], 'p'=>$hash,'id'=> $_SESSION['userID']]);
+					  
+					// $id = sqlUpdate($C, 'UPDATE users SET (users.name=?,email=?, password=?, verified=0) WHERE id=?','sssi', $_POST['name'], $_POST['email'], $hash,$_SESSION['userID']);
 					$res->free_result();
 				}
-				else {
-					//This email is already in use
-					$errors[] = 7;
-				}
-			}
 			else {
 				//Failed to connect to database
 				$errors[] = 8;
